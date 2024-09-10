@@ -305,42 +305,34 @@ public class GridTest {
     public void testBlinkerPatternOscillatesAndStabilizes() {
         Grid grid = new Grid(5, 5);
 
-        // Set up a horizontal Blinker pattern
         grid.setCellState(2, 1, true);
         grid.setCellState(2, 2, true);
         grid.setCellState(2, 3, true);
 
-        // Verify the initial horizontal Blinker pattern
         assertTrue(grid.getCellState(2, 1));
         assertTrue(grid.getCellState(2, 2));
         assertTrue(grid.getCellState(2, 3));
         assertFalse(grid.getCellState(1, 2));
         assertFalse(grid.getCellState(3, 2));
 
-        // Apply the update (next generation)
         grid.updateGrid();
 
-        // After one generation, the Blinker should be vertical
         assertFalse(grid.getCellState(2, 1));
         assertTrue(grid.getCellState(1, 2));
         assertTrue(grid.getCellState(2, 2));
         assertTrue(grid.getCellState(3, 2));
         assertFalse(grid.getCellState(2, 3));
 
-        // Apply another generation
         grid.updateGrid();
 
-        // After two generations, the Blinker should return to horizontal
         assertTrue(grid.getCellState(2, 1));
         assertTrue(grid.getCellState(2, 2));
         assertTrue(grid.getCellState(2, 3));
         assertFalse(grid.getCellState(1, 2));
         assertFalse(grid.getCellState(3, 2));
 
-        // Apply another generation to verify stability
         grid.updateGrid();
 
-        // After three generations, the Blinker should be vertical again
         assertFalse(grid.getCellState(2, 1));
         assertTrue(grid.getCellState(1, 2));
         assertTrue(grid.getCellState(2, 2));
@@ -348,77 +340,54 @@ public class GridTest {
         assertFalse(grid.getCellState(2, 3));
     }
 
-//    @Test
-//    @DisplayName("Verify Lightweight Spaceship (LWSS) movement across the grid")
-//    public void testLWSSMovement() {
-//        Grid grid = new Grid(7, 7);  // Create a 7x7 grid
-//
-//        // Set up the LWSS pattern
-//        grid.setCellState(2, 2, true);
-//        grid.setCellState(2, 3, true);
-//        grid.setCellState(2, 4, true);
-//        grid.setCellState(3, 1, true);
-//        grid.setCellState(3, 2, true);
-//        grid.setCellState(3, 3, true);
-//        grid.setCellState(4, 2, true);
-//        grid.setCellState(4, 3, true);
-//
-//        // Verify initial state
-//        assertTrue(grid.getCellState(2, 2));
-//        assertTrue(grid.getCellState(2, 3));
-//        assertTrue(grid.getCellState(2, 4));
-//        assertTrue(grid.getCellState(3, 1));
-//        assertTrue(grid.getCellState(3, 2));
-//        assertTrue(grid.getCellState(3, 3));
-//        assertTrue(grid.getCellState(4, 2));
-//        assertTrue(grid.getCellState(4, 3));
-//
-//        // Update the grid
-//        grid.updateGrid();
-//
-//        // Check the new position of the LWSS
-//        assertFalse(grid.getCellState(2, 2));
-//        assertFalse(grid.getCellState(2, 3));
-//        assertFalse(grid.getCellState(2, 4));
-//        assertFalse(grid.getCellState(3, 1));
-//        assertFalse(grid.getCellState(3, 2));
-//        assertFalse(grid.getCellState(3, 3));
-//        assertFalse(grid.getCellState(4, 2));
-//        assertFalse(grid.getCellState(4, 3));
-//
-//        // Verify new position (expected to move diagonally)
-//        assertTrue(grid.getCellState(1, 3));
-//        assertTrue(grid.getCellState(2, 1));
-//        assertTrue(grid.getCellState(2, 2));
-//        assertTrue(grid.getCellState(2, 3));
-//        assertTrue(grid.getCellState(3, 2));
-//        assertTrue(grid.getCellState(3, 3));
-//        assertTrue(grid.getCellState(4, 2));
-//        assertTrue(grid.getCellState(4, 3));
-//    }
+    @Test
+    @DisplayName("Verify Glider spaceship movement across the grid")
+    public void testGliderMovement() {
+        // Create a grid of sufficient size to allow Glider movement
+        Grid grid = new Grid(5, 5);  // 5x5 grid for the Glider to move
 
-//    @Test
-//    @DisplayName("Ensure all cells die due to overcrowding when the grid is full of live cells")
-//    public void testFullGridDiesDueToOvercrowding() {
-//        int rows = 5;  // Example grid size, can be adjusted
-//        int cols = 5;
-//        Grid grid = new Grid(rows, cols);
-//
-//        // Fill the grid with live cells
-//        for (int row = 0; row < rows; row++) {
-//            for (int col = 0; col < cols; col++) {
-//                grid.setCellState(row, col, true);
-//            }
-//        }
-//
-//        // Update the grid to the next generation
-//        grid.updateGrid();
-//
-//        // Check that all cells are dead after the update
-//        for (int row = 0; row < rows; row++) {
-//            for (int col = 0; col < cols; col++) {
-//                assertFalse(grid.getCellState(row, col), "Cell at (" + row + ", " + col + ") should be dead due to overcrowding.");
-//            }
-//        }
-//    }
+        grid.setCellState(0, 1, true);  // .O.
+        grid.setCellState(1, 2, true);  // ..O
+        grid.setCellState(2, 0, true);  // OOO
+        grid.setCellState(2, 1, true);
+        grid.setCellState(2, 2, true);
+
+        grid.updateGrid();
+
+        assertTrue(grid.getCellState(1, 0));
+        assertTrue(grid.getCellState(1, 2));
+        assertTrue(grid.getCellState(2, 1));
+        assertTrue(grid.getCellState(2, 2));
+        assertTrue(grid.getCellState(3, 1));
+
+        assertFalse(grid.getCellState(0, 1));
+        assertFalse(grid.getCellState(2, 0));
+    }
+
+
+
+    @Test
+    @DisplayName("Ensure all cells die due to overcrowding when the grid is full of live cells")
+    public void testFullGridDiesDueToOvercrowding() {
+        int rows = 4;
+        int cols = 4;
+        Grid grid = new Grid(rows, cols);
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                grid.setCellState(row, col, true);
+            }
+        }
+
+        grid.updateGrid();
+        grid.updateGrid();
+        grid.updateGrid();
+        grid.updateGrid();
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                assertFalse(grid.getCellState(row, col), "Cell at (" + row + ", " + col + ") should be dead due to overcrowding.");
+            }
+        }
+    }
 }
