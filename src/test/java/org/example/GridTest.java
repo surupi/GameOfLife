@@ -256,10 +256,6 @@ public class GridTest {
     public void nonSquareGridTest() {
         Grid grid = new Grid(3, 5);
 
-        // Initial pattern:
-        // 0 1 1 0 0
-        // 0 1 1 0 0
-        // 0 0 0 0 0
         grid.setCellState(0, 1, true);
         grid.setCellState(0, 2, true);
         grid.setCellState(1, 1, true);
